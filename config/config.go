@@ -1,6 +1,10 @@
 package config
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 var (
 	db     *gorm.DB
@@ -8,7 +12,18 @@ var (
 )
 
 func InitDB() error {
+	var err error
+
+	// Initialize database
+	db, err = InitSQLite()
+	if err != nil {
+		return fmt.Errorf("Erro ao inicializar o banco de dados: %v", err)
+	}
 	return nil
+}
+
+func GetDB() *gorm.DB {
+	return db
 }
 
 func InitLogger(prefix string) *Logger {
