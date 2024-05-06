@@ -11,7 +11,7 @@ func InitDB() error {
 	return nil
 }
 
-func GetLogger(prefix string) *Logger {
+func InitLogger(prefix string) *Logger {
 	// Initialize logger
 	logger = NewLogger(prefix)
 	return logger
