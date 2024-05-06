@@ -75,7 +75,7 @@ func DeleteOpening(ctx *gin.Context) {
 
 	if err := db.Where("id = ?", id).First(&opening).Error; err != nil {
 		logger.Error("Opening register not found", err)
-		sendError(ctx, 404, "Opening not found")
+		sendError(ctx, 404, "Opening register not found")
 		return
 	}
 
@@ -90,7 +90,13 @@ func DeleteOpening(ctx *gin.Context) {
 
 // ListOpenings represents the request to list all openings
 func ListOpenings(ctx *gin.Context) {
-	ctx.JSON(200, gin.H{
-		"message": "GET /api/v1/openings",
-	})
+	openings := []schemas.Opening{}
+
+	if err := db.Find(&openings).Error; err != nil {
+		logger.Error("Failed to list openings", err)
+		sendError(ctx, 500, "Failed to list openings")
+		return
+	}
+
+	sendSuccess(ctx, 200, openings)
 }
