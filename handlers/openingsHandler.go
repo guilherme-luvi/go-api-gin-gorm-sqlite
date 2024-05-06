@@ -65,9 +65,27 @@ func UpdateOpening(ctx *gin.Context) {
 
 // DeleteOpening represents the request to delete an opening
 func DeleteOpening(ctx *gin.Context) {
-	ctx.JSON(200, gin.H{
-		"message": "DELETE /api/v1/opening",
-	})
+	id := ctx.Query("id")
+	if id == "" {
+		logger.Error("Invalid id")
+		sendError(ctx, 400, "Invalid id")
+	}
+
+	opening := schemas.Opening{}
+
+	if err := db.Where("id = ?", id).First(&opening).Error; err != nil {
+		logger.Error("Opening register not found", err)
+		sendError(ctx, 404, "Opening not found")
+		return
+	}
+
+	if err := db.Delete(&opening).Error; err != nil {
+		logger.Error("Failed to delete opening register", err)
+		sendError(ctx, 500, "Failed to delete opening resgister")
+		return
+	}
+
+	sendSuccess(ctx, 204, "Record deleted")
 }
 
 // ListOpenings represents the request to list all openings
