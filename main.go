@@ -1,15 +1,10 @@
 package main
 
 import (
-	gin "github.com/gin-gonic/gin"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/router"
 )
 
 func main() {
-	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello!",
-		})
-	})
-	r.Run(":5000")
+	// Inicializa o router
+	router.SetupRouter()
 }
