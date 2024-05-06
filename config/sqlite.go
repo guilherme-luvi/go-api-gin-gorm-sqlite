@@ -9,7 +9,7 @@ import (
 )
 
 func InitSQLite() (*gorm.DB, error) {
-	logger := InitLogger("sqlite")
+	logger := GetLogger("sqlite")
 	dbPath := "./db/main.db"
 
 	// check if database file exists

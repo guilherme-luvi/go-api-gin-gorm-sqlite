@@ -11,7 +11,7 @@ var (
 
 func main() {
 	// Inicializa o logger
-	logger = config.InitLogger("main")
+	logger = config.GetLogger("main")
 
 	// Inicializa conexão com o banco de dados
 	err := config.InitDB()

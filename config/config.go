@@ -26,7 +26,7 @@ func GetDB() *gorm.DB {
 	return db
 }
 
-func InitLogger(prefix string) *Logger {
+func GetLogger(prefix string) *Logger {
 	// Initialize logger
 	logger = NewLogger(prefix)
 	return logger
