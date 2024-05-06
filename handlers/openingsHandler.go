@@ -49,11 +49,36 @@ func CreateOpening(ctx *gin.Context) {
 	sendSuccess(ctx, 201, opening)
 }
 
+// ListOpenings represents the request to list all openings
+func ListOpenings(ctx *gin.Context) {
+	openings := []schemas.Opening{}
+
+	if err := db.Find(&openings).Error; err != nil {
+		logger.Error("Failed to list openings", err)
+		sendError(ctx, 500, "Failed to list openings")
+		return
+	}
+
+	sendSuccess(ctx, 200, openings)
+}
+
 // GetOpening represents the request to get an opening
-func GetOpening(ctx *gin.Context) {
-	ctx.JSON(200, gin.H{
-		"message": "GET /api/v1/opening",
-	})
+func GetOpeningById(ctx *gin.Context) {
+	id := ctx.Query("id")
+	if id == "" {
+		logger.Error("Invalid id")
+		sendError(ctx, 400, "Invalid id")
+	}
+
+	opening := schemas.Opening{}
+
+	if err := db.Where("id = ?", id).First(&opening).Error; err != nil {
+		logger.Error("Opening register not found", err)
+		sendError(ctx, 404, "Opening register not found")
+		return
+	}
+
+	sendSuccess(ctx, 200, opening)
 }
 
 // UpdateOpening represents the request to update an opening
@@ -86,17 +111,4 @@ func DeleteOpening(ctx *gin.Context) {
 	}
 
 	sendSuccess(ctx, 204, "Record deleted")
-}
-
-// ListOpenings represents the request to list all openings
-func ListOpenings(ctx *gin.Context) {
-	openings := []schemas.Opening{}
-
-	if err := db.Find(&openings).Error; err != nil {
-		logger.Error("Failed to list openings", err)
-		sendError(ctx, 500, "Failed to list openings")
-		return
-	}
-
-	sendSuccess(ctx, 200, openings)
 }
