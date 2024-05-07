@@ -13,5 +13,5 @@ func SetupRouter() {
 	initalizeRoutes(router)
 
 	// Inicializa o servidor na porta 5000
-	router.Run(config.Port)
+	router.Run(":" + config.Port)
 }
