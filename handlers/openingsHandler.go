@@ -83,9 +83,44 @@ func GetOpeningById(ctx *gin.Context) {
 
 // UpdateOpening represents the request to update an opening
 func UpdateOpening(ctx *gin.Context) {
-	ctx.JSON(200, gin.H{
-		"message": "PUT /api/v1/opening",
-	})
+	id := ctx.Query("id")
+	if id == "" {
+		logger.Error("Invalid id")
+		sendError(ctx, 400, "Invalid id")
+	}
+
+	request := UpdateOpeningRequest{}
+
+	ctx.BindJSON(&request)
+
+	if err := request.validate(); err != nil {
+		logger.Errorf("Invalid request: %v", err)
+		sendError(ctx, 400, err.Error())
+		return
+	}
+
+	opening := schemas.Opening{}
+
+	if err := db.Where("id = ?", id).First(&opening).Error; err != nil {
+		logger.Error("Opening register not found", err)
+		sendError(ctx, 404, "Opening register not found")
+		return
+	}
+
+	opening.Role = request.Role
+	opening.Company = request.Company
+	opening.Location = request.Location
+	opening.Remote = *request.Remote
+	opening.Link = request.Link
+	opening.Salary = request.Salary
+
+	if err := db.Save(&opening).Error; err != nil {
+		logger.Error("Failed to update opening register", err)
+		sendError(ctx, 500, "Failed to update opening resgister")
+		return
+	}
+
+	sendSuccess(ctx, 200, opening)
 }
 
 // DeleteOpening represents the request to delete an opening
