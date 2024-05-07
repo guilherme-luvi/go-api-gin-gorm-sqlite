@@ -43,7 +43,7 @@ func GetUserById(ctx *gin.Context) {
 
 	user := schemas.User{}
 
-	if err := db.First(&user, id).Error; err != nil {
+	if err := db.Where("id = ?", id).First(&user).Error; err != nil {
 		logger.Error("Failed to find user", err)
 		sendError(ctx, 404, err.Error())
 		return
