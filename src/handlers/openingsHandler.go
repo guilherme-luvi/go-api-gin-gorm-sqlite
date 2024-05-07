@@ -10,7 +10,6 @@ import (
 // CreateOpening represents the request to create an opening
 func CreateOpening(ctx *gin.Context) {
 	request := CreateOpeningRequest{}
-
 	ctx.BindJSON(&request)
 
 	if err := request.validate(); err != nil {
@@ -78,7 +77,6 @@ func UpdateOpening(ctx *gin.Context) {
 	}
 
 	request := UpdateOpeningRequest{}
-
 	ctx.BindJSON(&request)
 
 	if err := request.validate(); err != nil {

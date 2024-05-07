@@ -8,7 +8,6 @@ import (
 
 func Login(ctx *gin.Context) {
 	request := LoginRequest{}
-
 	ctx.BindJSON(&request)
 
 	if err := request.validate(); err != nil {
@@ -30,7 +29,6 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	// generate token
 	token, err := auth.GenerateToken(user.ID)
 	if err != nil {
 		logger.Error("Failed to generate token", err)
