@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/schemas"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/schemas"
 )
 
 // Openings CRUD:

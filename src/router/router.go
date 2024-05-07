@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/config"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/config"
 )
 
 func SetupRouter() {

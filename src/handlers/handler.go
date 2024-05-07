@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/config"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/config"
 	"gorm.io/gorm"
 )
 

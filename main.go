@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/config"
-	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/router"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/config"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/router"
 )
 
 func main() {

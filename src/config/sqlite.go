@@ -3,14 +3,14 @@ package config
 import (
 	"os"
 
-	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/schemas"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/schemas"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func InitSQLite() (*gorm.DB, error) {
 	logger := GetLogger("sqlite")
-	dbPath := "./db/main.db"
+	dbPath := "././db/main.db"
 
 	// check if database file exists
 	_, err := os.Stat(dbPath)
@@ -18,7 +18,7 @@ func InitSQLite() (*gorm.DB, error) {
 		logger.Info("Arquivo do Banco de dados sqlite não encontrado, criando um novo...")
 
 		// create db directory
-		err = os.MkdirAll("./db", os.ModePerm)
+		err = os.MkdirAll("././db", os.ModePerm)
 		if err != nil {
 			return nil, err
 		}
