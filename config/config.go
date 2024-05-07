@@ -21,6 +21,7 @@ func InitEnvVars() error {
 	}
 
 	Port = os.Getenv("API_PORT")
+	fmt.Print("variáveis de ambiente carregadas com sucesso\n")
 	return nil
 }
 
@@ -32,6 +33,7 @@ func InitDB() error {
 	if err != nil {
 		return fmt.Errorf("erro ao inicializar o banco de dados: %v", err)
 	}
+	fmt.Print("banco de dados inicializado com sucesso\n")
 	return nil
 }
 

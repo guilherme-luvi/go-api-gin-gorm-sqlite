@@ -5,19 +5,20 @@ import (
 	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/router"
 )
 
-var (
-	logger *config.Logger
-)
-
 func main() {
-	// Inicializa as variáveis de ambiente
-	config.InitEnvVars()
-
 	// Inicializa o logger
-	logger = config.GetLogger("main")
+	logger := config.GetLogger("main")
+
+	// Inicializa as variáveis de ambiente
+	err := config.InitEnvVars()
+	if err != nil {
+		logger.Errorf("Erro ao inicializar as variáveis de ambiente: %v", err)
+		return
+
+	}
 
 	// Inicializa conexão com o banco de dados
-	err := config.InitDB()
+	err = config.InitDB()
 	if err != nil {
 		logger.Errorf("Erro ao inicializar o banco de dados: %v", err)
 		return
