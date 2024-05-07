@@ -21,6 +21,7 @@ func InitEnvVars() error {
 	}
 
 	Port = os.Getenv("API_PORT")
+	return nil
 }
 
 func InitDB() error {
