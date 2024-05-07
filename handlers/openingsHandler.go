@@ -2,20 +2,8 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/config"
 	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/schemas"
-	"gorm.io/gorm"
 )
-
-var (
-	logger *config.Logger
-	db     *gorm.DB
-)
-
-func InitHandler() {
-	logger = config.GetLogger("handler")
-	db = config.GetDB()
-}
 
 // Openings CRUD:
 
