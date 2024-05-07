@@ -17,7 +17,7 @@ var (
 func InitEnvVars() error {
 	// Initialize environment variables
 	if err := godotenv.Load(); err != nil {
-		return fmt.Errorf("Erro ao carregar variáveis de ambiente: %v", err)
+		return fmt.Errorf("erro ao carregar variáveis de ambiente: %v", err)
 	}
 
 	Port = os.Getenv("API_PORT")
@@ -30,7 +30,7 @@ func InitDB() error {
 	// Initialize database
 	db, err = InitSQLite()
 	if err != nil {
-		return fmt.Errorf("Erro ao inicializar o banco de dados: %v", err)
+		return fmt.Errorf("erro ao inicializar o banco de dados: %v", err)
 	}
 	return nil
 }
