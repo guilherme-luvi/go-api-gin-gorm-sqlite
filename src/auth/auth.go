@@ -55,7 +55,7 @@ func ValidateToken(tokenString string) (jwt.MapClaims, error) {
 func ValidateTokenAndGetUserID(tokenString string) (string, error) {
 	claims, err := ValidateToken(tokenString)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 	return claims["userId"].(string), nil
 }
