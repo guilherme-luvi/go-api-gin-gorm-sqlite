@@ -54,6 +54,13 @@ func GetUserById(ctx *gin.Context) {
 
 // UpdateUser updates a user
 func UpdateUser(ctx *gin.Context) {
+	if ctx.GetHeader("Authorization") == "" {
+		logger.Error("Unauthorized")
+		sendError(ctx, 401, "Unauthorized")
+		return
+	}
+	userIdFromToken, _ := auth.ValidateTokenAndGetUserID(ctx.GetHeader("Authorization"))
+
 	id := ctx.Query("id")
 	if id == "" {
 		logger.Error("Invalid id")
@@ -61,8 +68,13 @@ func UpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	request := UpdateUserRequest{}
+	if userIdFromToken != id {
+		logger.Error("Unauthorized")
+		sendError(ctx, 401, "Unauthorized")
+		return
+	}
 
+	request := UpdateUserRequest{}
 	ctx.BindJSON(&request)
 
 	if err := request.validate(); err != nil {
@@ -71,13 +83,19 @@ func UpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	user := schemas.User{
-		Name:     request.Name,
-		Email:    request.Email,
-		Password: request.Password,
+	user := schemas.User{}
+
+	if err := db.Where("id = ?", id).First(&user).Error; err != nil {
+		logger.Error("Failed to find user", err)
+		sendError(ctx, 404, err.Error())
+		return
 	}
 
-	if err := db.Model(&user).Where("id = ?", id).Updates(&user).Error; err != nil {
+	user.Name = request.Name
+	user.Email = request.Email
+	user.Password, _ = auth.HashPassword(request.Password)
+
+	if err := db.Save(&user).Error; err != nil {
 		logger.Error("Failed to update user", err)
 		sendError(ctx, 500, err.Error())
 		return
@@ -88,6 +106,13 @@ func UpdateUser(ctx *gin.Context) {
 
 // DeleteUser deletes a user
 func DeleteUser(ctx *gin.Context) {
+	if ctx.GetHeader("Authorization") == "" {
+		logger.Error("Unauthorized")
+		sendError(ctx, 401, "Unauthorized")
+		return
+	}
+	userIdFromToken, _ := auth.ValidateTokenAndGetUserID(ctx.GetHeader("Authorization"))
+
 	id := ctx.Query("id")
 	if id == "" {
 		logger.Error("Invalid id")
@@ -95,9 +120,13 @@ func DeleteUser(ctx *gin.Context) {
 		return
 	}
 
-	user := schemas.User{}
+	if userIdFromToken != id {
+		logger.Error("Unauthorized")
+		sendError(ctx, 401, "Unauthorized")
+	}
 
-	if err := db.Where("id = ?", id).Delete(&user).Error; err != nil {
+	// delete user
+	if err := db.Where("id = ?", id).Delete(&schemas.User{}).Error; err != nil {
 		logger.Error("Failed to delete user", err)
 		sendError(ctx, 500, err.Error())
 		return
