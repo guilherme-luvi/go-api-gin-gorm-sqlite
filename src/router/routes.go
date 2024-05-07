@@ -25,5 +25,8 @@ func initalizeRoutes(router *gin.Engine) {
 		// Falta incluir validação de token nessas duas rotas
 		v1.DELETE("/user", handlers.DeleteUser)
 		v1.PUT("/user", handlers.UpdateUser)
+
+		// Auth routes
+		v1.POST("/login", handlers.Login)
 	}
 }

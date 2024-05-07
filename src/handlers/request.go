@@ -1,6 +1,8 @@
 package handlers
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Auxiliar function to return an error when a required parameter is missing
 func errParamMissing(param, typ string) error {
@@ -103,4 +105,23 @@ func (req *UpdateUserRequest) validate() error {
 
 	// if none of the fields is provided, return error
 	return fmt.Errorf("at least one field must be provided")
+}
+
+// LoginRequest struct represents the request to login
+
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (req *LoginRequest) validate() error {
+	if req.Email == "" {
+		return errParamMissing("email", "string")
+	}
+
+	if req.Password == "" {
+		return errParamMissing("password", "string")
+	}
+
+	return nil
 }

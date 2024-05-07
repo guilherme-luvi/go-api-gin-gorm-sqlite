@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/auth"
 	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/schemas"
 )
 
@@ -19,10 +20,12 @@ func CreateUser(ctx *gin.Context) {
 		return
 	}
 
+	hashedPassword, _ := auth.HashPassword(request.Password)
+
 	user := schemas.User{
 		Name:     request.Name,
 		Email:    request.Email,
-		Password: request.Password,
+		Password: hashedPassword,
 	}
 
 	if err := db.Create(&user).Error; err != nil {
