@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/config"
 )
 
 func SetupRouter() {
@@ -12,5 +13,5 @@ func SetupRouter() {
 	initalizeRoutes(router)
 
 	// Inicializa o servidor na porta 5000
-	router.Run(":5000")
+	router.Run(config.Port)
 }

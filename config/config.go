@@ -2,14 +2,26 @@ package config
 
 import (
 	"fmt"
+	"os"
 
+	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 )
 
 var (
+	Port   string
 	db     *gorm.DB
 	logger *Logger
 )
+
+func InitEnvVars() error {
+	// Initialize environment variables
+	if err := godotenv.Load(); err != nil {
+		return fmt.Errorf("Erro ao carregar variáveis de ambiente: %v", err)
+	}
+
+	Port = os.Getenv("API_PORT")
+}
 
 func InitDB() error {
 	var err error

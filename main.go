@@ -10,6 +10,9 @@ var (
 )
 
 func main() {
+	// Inicializa as variáveis de ambiente
+	config.InitEnvVars()
+
 	// Inicializa o logger
 	logger = config.GetLogger("main")
 
