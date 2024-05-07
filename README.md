@@ -1,4 +1,4 @@
-# go-api-gin-swagger-goorm-sqlite
+# go-api-gin-goorm-sqlite
 
 Exemplo de API moderna desenvolcida em Go
 
