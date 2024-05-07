@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"strings"
 	"time"
 
@@ -31,31 +32,33 @@ func GenerateToken(userID uint) (string, error) {
 	return token.SignedString([]byte(config.SecretKey))
 }
 
-func ValidateToken(tokenString string) (jwt.MapClaims, error) {
+func ValidateTokenAndGetUserID(tokenString string) (uint64, error) {
 	// Validate Bearer format
 	if strings.HasPrefix(tokenString, "Bearer ") {
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 	} else {
-		return nil, jwt.ErrInvalidKey
+		return 0, jwt.ErrInvalidKey
 	}
 
 	// Validate token
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.SecretKey), nil
-	})
+	token, err := jwt.Parse(tokenString, returnVerificationKey)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return claims, nil
+
+	if permissions, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		userID := permissions["userId"]
+		if userIDFloat, ok := userID.(float64); ok {
+			return uint64(userIDFloat), nil
+		}
 	}
-	return nil, err
+
+	return 0, jwt.ErrInvalidKey
 }
 
-func ValidateTokenAndGetUserID(tokenString string) (string, error) {
-	claims, err := ValidateToken(tokenString)
-	if err != nil {
-		return "", err
+func returnVerificationKey(token *jwt.Token) (interface{}, error) {
+	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+		return nil, errors.New("unexpected signing method")
 	}
-	return claims["userId"].(string), nil
+	return config.SecretKey, nil
 }

@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/auth"
 	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/schemas"
@@ -68,7 +70,8 @@ func UpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	if userIdFromToken != id {
+	idQuery, _ := strconv.ParseUint(id, 10, 64)
+	if userIdFromToken != idQuery {
 		logger.Error("Unauthorized")
 		sendError(ctx, 401, "Unauthorized")
 		return
@@ -120,7 +123,8 @@ func DeleteUser(ctx *gin.Context) {
 		return
 	}
 
-	if userIdFromToken != id {
+	idQuery, _ := strconv.ParseUint(id, 10, 64)
+	if userIdFromToken != idQuery {
 		logger.Error("Unauthorized")
 		sendError(ctx, 401, "Unauthorized")
 	}
