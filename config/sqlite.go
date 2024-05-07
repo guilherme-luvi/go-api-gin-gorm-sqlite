@@ -45,6 +45,12 @@ func InitSQLite() (*gorm.DB, error) {
 		return nil, err
 	}
 
+	err = db.AutoMigrate(&schemas.User{})
+	if err != nil {
+		logger.Errorf("Erro ao criar a tabela User: %v", err)
+		return nil, err
+	}
+
 	logger.Info("Conexão com o banco de dados sqlite estabelecida com sucesso")
 	return db, nil
 }
