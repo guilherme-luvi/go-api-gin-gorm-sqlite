@@ -13,7 +13,6 @@ import (
 // CreateUser creates a new user
 func CreateUser(ctx *gin.Context) {
 	request := CreateUserRequest{}
-
 	ctx.BindJSON(&request)
 
 	if err := request.validate(); err != nil {
@@ -61,7 +60,13 @@ func UpdateUser(ctx *gin.Context) {
 		sendError(ctx, 401, "Unauthorized")
 		return
 	}
-	userIdFromToken, _ := auth.ValidateTokenAndGetUserID(ctx.GetHeader("Authorization"))
+
+	userIdFromToken, err := auth.ValidateTokenAndGetUserID(ctx.GetHeader("Authorization"))
+	if err != nil {
+		logger.Error("Unauthorized")
+		sendError(ctx, 401, err.Error())
+		return
+	}
 
 	id := ctx.Query("id")
 	if id == "" {
@@ -114,7 +119,13 @@ func DeleteUser(ctx *gin.Context) {
 		sendError(ctx, 401, "Unauthorized")
 		return
 	}
-	userIdFromToken, _ := auth.ValidateTokenAndGetUserID(ctx.GetHeader("Authorization"))
+
+	userIdFromToken, err := auth.ValidateTokenAndGetUserID(ctx.GetHeader("Authorization"))
+	if err != nil {
+		logger.Error("Unauthorized")
+		sendError(ctx, 401, err.Error())
+		return
+	}
 
 	id := ctx.Query("id")
 	if id == "" {
@@ -129,7 +140,6 @@ func DeleteUser(ctx *gin.Context) {
 		sendError(ctx, 401, "Unauthorized")
 	}
 
-	// delete user
 	if err := db.Where("id = ?", id).Delete(&schemas.User{}).Error; err != nil {
 		logger.Error("Failed to delete user", err)
 		sendError(ctx, 500, err.Error())
