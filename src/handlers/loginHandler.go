@@ -16,12 +16,9 @@ func Login(ctx *gin.Context) {
 		sendError(ctx, 400, err.Error())
 	}
 
-	user := schemas.User{
-		Email:    request.Email,
-		Password: request.Password,
-	}
+	user := schemas.User{}
 
-	if err := db.Where(&user).First(&user).Error; err != nil {
+	if err := db.Where("email = ?", request.Email).First(&user).Error; err != nil {
 		logger.Error("Failed to find user", err)
 		sendError(ctx, 404, err.Error())
 		return
