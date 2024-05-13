@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/handlers"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/middleware"
 )
 
 func initalizeRoutes(router *gin.Engine) {
@@ -21,8 +22,8 @@ func initalizeRoutes(router *gin.Engine) {
 		// User routes
 		v1.GET("/user", handlers.GetUserById)
 		v1.POST("/user", handlers.CreateUser)
-		v1.DELETE("/user", handlers.DeleteUser)
-		v1.PUT("/user", handlers.UpdateUser)
+		v1.DELETE("/user", middleware.RequireAuth, handlers.DeleteUser)
+		v1.PUT("/user", middleware.RequireAuth, handlers.UpdateUser)
 
 		// Auth routes
 		v1.POST("/login", handlers.Login)

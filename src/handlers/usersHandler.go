@@ -4,8 +4,9 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/auth"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/repositories"
 	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/schemas"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/security"
 )
 
 // Users CRUD:
@@ -21,7 +22,7 @@ func CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	hashedPassword, _ := auth.HashPassword(request.Password)
+	hashedPassword, _ := security.HashPassword(request.Password)
 
 	user := schemas.User{
 		Name:     request.Name,
@@ -29,7 +30,7 @@ func CreateUser(ctx *gin.Context) {
 		Password: hashedPassword,
 	}
 
-	if err := db.Create(&user).Error; err != nil {
+	if err := repositories.NewUserRepository(db).CreateUser(user); err != nil {
 		logger.Error("Failed to create user", err)
 		sendError(ctx, 500, err.Error())
 		return
@@ -55,19 +56,6 @@ func GetUserById(ctx *gin.Context) {
 
 // UpdateUser updates a user
 func UpdateUser(ctx *gin.Context) {
-	if ctx.GetHeader("Authorization") == "" {
-		logger.Error("Unauthorized")
-		sendError(ctx, 401, "Unauthorized")
-		return
-	}
-
-	userIdFromToken, err := auth.ValidateTokenAndGetUserID(ctx.GetHeader("Authorization"))
-	if err != nil {
-		logger.Error("Unauthorized")
-		sendError(ctx, 401, err.Error())
-		return
-	}
-
 	id := ctx.Query("id")
 	if id == "" {
 		logger.Error("Invalid id")
@@ -76,7 +64,8 @@ func UpdateUser(ctx *gin.Context) {
 	}
 
 	idQuery, _ := strconv.ParseUint(id, 10, 64)
-	if userIdFromToken != idQuery {
+	userID := ctx.MustGet("userID").(uint64)
+	if userID != idQuery {
 		logger.Error("Unauthorized")
 		sendError(ctx, 401, "Unauthorized")
 		return
@@ -101,7 +90,7 @@ func UpdateUser(ctx *gin.Context) {
 
 	user.Name = request.Name
 	user.Email = request.Email
-	user.Password, _ = auth.HashPassword(request.Password)
+	user.Password, _ = security.HashPassword(request.Password)
 
 	if err := db.Save(&user).Error; err != nil {
 		logger.Error("Failed to update user", err)
@@ -114,19 +103,6 @@ func UpdateUser(ctx *gin.Context) {
 
 // DeleteUser deletes a user
 func DeleteUser(ctx *gin.Context) {
-	if ctx.GetHeader("Authorization") == "" {
-		logger.Error("Unauthorized")
-		sendError(ctx, 401, "Unauthorized")
-		return
-	}
-
-	userIdFromToken, err := auth.ValidateTokenAndGetUserID(ctx.GetHeader("Authorization"))
-	if err != nil {
-		logger.Error("Unauthorized")
-		sendError(ctx, 401, err.Error())
-		return
-	}
-
 	id := ctx.Query("id")
 	if id == "" {
 		logger.Error("Invalid id")
@@ -135,7 +111,8 @@ func DeleteUser(ctx *gin.Context) {
 	}
 
 	idQuery, _ := strconv.ParseUint(id, 10, 64)
-	if userIdFromToken != idQuery {
+	userID := ctx.MustGet("userID").(uint64)
+	if userID != idQuery {
 		logger.Error("Unauthorized")
 		sendError(ctx, 401, "Unauthorized")
 	}

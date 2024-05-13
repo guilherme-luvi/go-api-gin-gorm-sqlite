@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/auth"
 	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/schemas"
+	"github.com/guilherme-luvi/go-api-gin-swagger-goorm-sqlite/src/security"
 )
 
 func Login(ctx *gin.Context) {
@@ -23,13 +23,13 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	if err := auth.ComparePassword(user.Password, request.Password); err != nil {
+	if err := security.ComparePassword(user.Password, request.Password); err != nil {
 		logger.Error("Failed to authenticate user", err)
 		sendError(ctx, 401, err.Error())
 		return
 	}
 
-	token, err := auth.GenerateToken(user.ID)
+	token, err := security.GenerateToken(user.ID)
 	if err != nil {
 		logger.Error("Failed to generate token", err)
 		sendError(ctx, 500, err.Error())
